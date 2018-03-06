@@ -7,7 +7,7 @@ apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'gs-spring-boot-docker'
-    version =  '0.1.0'
+    version = '0.1.0'
 }
 
 repositories {
@@ -33,6 +33,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile group: 'com.h2database', name: 'h2', version: '1.4.195'
     compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.8.0'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.8.0'
 
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.1'
 
