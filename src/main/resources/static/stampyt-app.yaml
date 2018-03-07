@@ -37,7 +37,7 @@ paths:
         201:
           description: "Created"
           schema:
-            $ref: '#/definitions/GarageWithId'
+            $ref: '#/definitions/DetailedGarage'
         400:
           description: "Bad Request"
           schema:
@@ -75,7 +75,7 @@ paths:
         200:
           description: "OK"
           schema:
-            $ref: '#/definitions/GarageWithId'
+            $ref: '#/definitions/DetailedGarage'
         400:
           description: "Bad Request"
           schema:
@@ -135,7 +135,7 @@ paths:
         200:
           description: "OK"
           schema:
-            $ref: '#/definitions/CarWithId'
+            $ref: '#/definitions/Car'
         400:
           description: "Bad Request"
           schema:
@@ -166,22 +166,33 @@ definitions:
         items:
           $ref: "#/definitions/Car"
 
-  GarageWithId:
+  DetailedGarage:
     allOf:
-      - $ref: "#/definitions/Garage"
       - properties:
           garage-id:
             type: "string"
+          creationDate:
+            type: "string"
+            format: "date-time"
+      - $ref: "#/definitions/Garage"
+      - properties:
+          cars:
+            type: "array"
+            items:
+              $ref: '#/definitions/Car'
 
   Car:
     type: "object"
     required:
+      - "registrationNumber"
       - "brand"
       - "model"
       - "color"
       - "commisioningDate"
       - "price"
     properties:
+      registrationNumber:
+        type: "string"
       brand:
         type: "string"
       model:
@@ -193,13 +204,6 @@ definitions:
         format: "date-time"
       price:
         type: "number"
-
-  CarWithId:
-    allOf:
-      - $ref: "#/definitions/Car"
-      - properties:
-          car-id:
-            type: "string"
 
   Error:
     type: "object"

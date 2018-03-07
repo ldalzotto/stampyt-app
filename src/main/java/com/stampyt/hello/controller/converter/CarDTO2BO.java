@@ -1,27 +1,24 @@
-package com.stampyt.hello.service.converter.car;
+package com.stampyt.hello.controller.converter;
 
-import com.stampyt.hello.respository.entity.Car;
+import com.stampyt.hello.controller.model.CarDTO;
 import com.stampyt.hello.service.model.CarBO;
-import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Car2CarBO implements Converter<Car, CarBO> {
+public class CarDTO2BO implements Converter<CarDTO, CarBO> {
 
     @Override
-    public CarBO convert(Car source) {
+    public CarBO convert(CarDTO source) {
         CarBO carBO = new CarBO();
-
         if (source != null) {
             carBO.setBrand(source.getBrand());
             carBO.setColor(source.getColor());
-            carBO.setCommisioningDate(new DateTime(source.getCommisioningDate()));
-            carBO.setModel(source.getModel());
+            carBO.setCommisioningDate(source.getCommisioningDate());
             carBO.setRegistrationNumber(source.getRegistrationNumber());
+            carBO.setModel(source.getModel());
             carBO.setPrice(source.getPrice());
         }
-
         return carBO;
     }
 }

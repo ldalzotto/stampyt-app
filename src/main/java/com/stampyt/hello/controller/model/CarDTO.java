@@ -1,27 +1,37 @@
 package com.stampyt.hello.controller.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.stampyt.hello.controller.serializers.DateTimeWithZDeSerializer;
+import com.stampyt.hello.controller.serializers.DateTimeWithZSerializer;
 import org.joda.time.DateTime;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarDTO {
 
-    private UUID carid;
-
-    @NotNull
+    @NotNull(message = "Car brand should be provided.")
     private String brand;
 
-    @NotNull
+    @NotNull(message = "Car model should be provided.")
     private String model;
-    @NotNull
+
+    @NotNull(message = "Car color should be provided.")
     private String color;
 
+    @NotNull(message = "Registration number should be provided.")
+    private String registrationNumber;
+
+    @JsonSerialize(using = DateTimeWithZSerializer.class)
+    @JsonDeserialize(using = DateTimeWithZDeSerializer.class)
+    @NotNull(message = "Commisioning date should be provided.")
     private DateTime commisioningDate;
 
-    @NotNull
-    @Min(value = 0)
+    @NotNull(message = "Car price should be provided.")
+    @Min(value = 0, message = "Car price should be > 0.")
     private Float price;
 
     public String getBrand() {
@@ -62,5 +72,13 @@ public class CarDTO {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
     }
 }

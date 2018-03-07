@@ -1,7 +1,5 @@
 package com.stampyt.hello.respository.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -12,8 +10,6 @@ import java.util.Set;
 public class Garage {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
 
     @NotNull
@@ -29,7 +25,54 @@ public class Garage {
     @NotNull
     private Integer carStorageLimit;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "car")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "garage")
     private Set<Car> cars = new HashSet<>();
 
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Integer getCarStorageLimit() {
+        return carStorageLimit;
+    }
+
+    public void setCarStorageLimit(Integer carStorageLimit) {
+        this.carStorageLimit = carStorageLimit;
+    }
+
+    public Set<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(Set<Car> cars) {
+        this.cars = cars;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

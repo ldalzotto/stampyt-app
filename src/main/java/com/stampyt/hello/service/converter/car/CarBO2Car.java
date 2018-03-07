@@ -6,11 +6,19 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CarBO2Car implements Converter<Car, CarBO> {
+public class CarBO2Car implements Converter<CarBO, Car> {
 
     @Override
-    public CarBO convert(Car source) {
-        //TODO
-        return null;
+    public Car convert(CarBO source) {
+        Car car = new Car();
+        if (source != null) {
+            car.setBrand(source.getBrand());
+            car.setColor(source.getColor());
+            car.setCommisioningDate(source.getCommisioningDate().toDate());
+            car.setModel(source.getModel());
+            car.setRegistrationNumber(source.getRegistrationNumber());
+            car.setPrice(source.getPrice());
+        }
+        return car;
     }
 }
