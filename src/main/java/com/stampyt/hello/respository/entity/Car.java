@@ -1,28 +1,29 @@
 package com.stampyt.hello.respository.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 public class Car {
 
     @Id
-    @Column(name = "registrationNumber")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
+
     private String registrationNumber;
 
-    @NotNull
     private String model;
-    @NotNull
     private String brand;
-    @NotNull
     private String color;
 
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date commisioningDate;
 
-    @NotNull
     private Float price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -83,5 +84,13 @@ public class Car {
 
     public void setGarage(Garage garage) {
         this.garage = garage;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

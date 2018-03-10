@@ -23,8 +23,10 @@ public class GarageBO2Garage implements Converter<GarageBO, Garage> {
         Garage garage = new Garage();
         if (source != null) {
             garage.setAddress(source.getAddress());
-            garage.setId(source.getId().toString());
-            garage.setCreationDate(source.getCreationDate().toDate());
+            garage.setId(source.getId());
+            if (source.getCreationDate() != null) {
+                garage.setCreationDate(source.getCreationDate().toDate());
+            }
             garage.setCarStorageLimit(source.getCarStorageLimit());
             garage.setName(source.getName());
 

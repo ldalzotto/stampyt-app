@@ -1,36 +1,33 @@
 package com.stampyt.hello.respository.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class Garage {
 
     @Id
-    private String id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String address;
 
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
-    @NotNull
     private Integer carStorageLimit;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "garage")
     private Set<Car> cars = new HashSet<>();
-
-    public String getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -72,7 +69,11 @@ public class Garage {
         this.cars = cars;
     }
 
-    public void setId(String id) {
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
         this.id = id;
     }
 }

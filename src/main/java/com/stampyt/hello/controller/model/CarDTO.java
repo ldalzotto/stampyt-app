@@ -8,29 +8,26 @@ import com.stampyt.hello.controller.serializers.DateTimeWithZSerializer;
 import org.joda.time.DateTime;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import java.util.Objects;
+import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarDTO {
 
-    @NotNull(message = "Car brand should be provided.")
+    private UUID cardId;
+
     private String brand;
 
-    @NotNull(message = "Car model should be provided.")
     private String model;
 
-    @NotNull(message = "Car color should be provided.")
     private String color;
 
-    @NotNull(message = "Registration number should be provided.")
     private String registrationNumber;
 
     @JsonSerialize(using = DateTimeWithZSerializer.class)
     @JsonDeserialize(using = DateTimeWithZDeSerializer.class)
-    @NotNull(message = "Commisioning date should be provided.")
     private DateTime commisioningDate;
 
-    @NotNull(message = "Car price should be provided.")
     @Min(value = 0, message = "Car price should be > 0.")
     private Float price;
 
@@ -80,5 +77,33 @@ public class CarDTO {
 
     public void setRegistrationNumber(String registrationNumber) {
         this.registrationNumber = registrationNumber;
+    }
+
+    public UUID getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(UUID cardId) {
+        this.cardId = cardId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CarDTO carDTO = (CarDTO) o;
+        return Objects.equals(cardId, carDTO.cardId) &&
+                Objects.equals(brand, carDTO.brand) &&
+                Objects.equals(model, carDTO.model) &&
+                Objects.equals(color, carDTO.color) &&
+                Objects.equals(registrationNumber, carDTO.registrationNumber) &&
+                Objects.equals(commisioningDate, carDTO.commisioningDate) &&
+                Objects.equals(price, carDTO.price);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(cardId, brand, model, color, registrationNumber, commisioningDate, price);
     }
 }

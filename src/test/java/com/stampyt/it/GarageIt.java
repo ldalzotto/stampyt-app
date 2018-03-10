@@ -81,6 +81,23 @@ public class GarageIt {
         Assert.assertEquals(responseAfterDelete.getStatusCode(), HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    public void updateGarageDetails_nominalTest() {
+        DateTime timeBeforeApiCall = DateTime.now(DateTimeZone.UTC);
+
+        GarageDTO generatedGarage = this.insertRandomGarage(true).getBody();
+        UUID insertedGarageId = generatedGarage.getGarageId();
+
+        GarageDTO garageDetailsToUpdate = GarageDTOProvider.generateGarageDetails("AnotherName", null, null);
+        garageDetailsToUpdate.setGarageId(insertedGarageId);
+        testRestTemplate.put("/garage/" + insertedGarageId.toString(), garageDetailsToUpdate);
+        ResponseEntity<GarageDTO> updatedGarageResponse = testRestTemplate.getForEntity("/garage/" + insertedGarageId.toString(), GarageDTO.class);
+        Assert.assertEquals(updatedGarageResponse.getStatusCode(), HttpStatus.OK);
+
+        generatedGarage.setName("AnotherName");
+        this.assertGarageDetails(generatedGarage, updatedGarageResponse.getBody(), timeBeforeApiCall);
+    }
+
     private void assertGarageDetails(GarageDTO inputGarage, GarageDTO responseGarage, DateTime timeBeforeApiCall) {
         Assert.assertNotNull(responseGarage);
         Assert.assertEquals(responseGarage.getAddress(), inputGarage.getAddress());
@@ -96,7 +113,8 @@ public class GarageIt {
                     inputGarage.getCars()) {
                 for (CarDTO outputCars :
                         responseGarage.getCars()) {
-                    if (inputCars.getRegistrationNumber().equals(outputCars.getRegistrationNumber())) {
+                    inputCars.setCardId(outputCars.getCardId());
+                    if (inputCars.equals(outputCars)) {
                         this.assertCarDetails(inputCars, outputCars);
                     }
                 }

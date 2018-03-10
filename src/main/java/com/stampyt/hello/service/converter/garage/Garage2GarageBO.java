@@ -7,7 +7,6 @@ import org.joda.time.DateTime;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +23,7 @@ public class Garage2GarageBO implements Converter<Garage, GarageBO> {
         GarageBO garageBO = new GarageBO();
 
         if (source != null) {
-            garageBO.setId(UUID.fromString(source.getId()));
+            garageBO.setId(source.getId());
             garageBO.setAddress(source.getAddress());
             garageBO.setCreationDate(new DateTime(source.getCreationDate()));
             garageBO.setCarStorageLimit(source.getCarStorageLimit());

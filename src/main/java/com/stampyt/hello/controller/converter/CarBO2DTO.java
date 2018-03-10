@@ -17,6 +17,7 @@ public class CarBO2DTO implements Converter<CarBO, CarDTO> {
             carDTO.setModel(source.getModel());
             carDTO.setRegistrationNumber(source.getRegistrationNumber());
             carDTO.setPrice(source.getPrice());
+            carDTO.setCardId(source.getId());
         }
         return carDTO;
     }

@@ -20,6 +20,20 @@ public class GarageDTOProvider {
         return garageDTO;
     }
 
+    public static GarageDTO generateGarageDetails(String name, String address, Integer maxCapacity) {
+        GarageDTO garageDTO = new GarageDTO();
+        if (name != null) {
+            garageDTO.setName(name);
+        }
+        if (address != null) {
+            garageDTO.setAddress(address);
+        }
+        if (maxCapacity != null) {
+            garageDTO.setMaxCapacity(maxCapacity);
+        }
+        return garageDTO;
+    }
+
     private static GarageDTO generateRandomGarage() {
         GarageDTO garageDTO = new GarageDTO();
         garageDTO.setName(RandomStringUtils.random(10, true, false));

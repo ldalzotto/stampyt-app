@@ -2,8 +2,11 @@ package com.stampyt.hello.service.model;
 
 import org.joda.time.DateTime;
 
+import java.util.UUID;
+
 public class CarBO {
 
+    private UUID id;
     private String brand;
     private String model;
     private String color;
@@ -57,5 +60,13 @@ public class CarBO {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

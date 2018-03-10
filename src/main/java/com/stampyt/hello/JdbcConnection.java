@@ -31,7 +31,6 @@ public class JdbcConnection {
             String username = dbUri.getUserInfo().split(":")[0];
             String password = dbUri.getUserInfo().split(":")[1];
             String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-            //dbUrl += "?sslmode=require&user=loic.dalzotto@hotmail.fr&password=Abc01234";
 
             basicDataSource.setUrl(dbUrl);
             basicDataSource.setDriverClassName(Driver.class.getName());

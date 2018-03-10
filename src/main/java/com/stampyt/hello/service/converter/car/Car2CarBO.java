@@ -20,6 +20,7 @@ public class Car2CarBO implements Converter<Car, CarBO> {
             carBO.setModel(source.getModel());
             carBO.setRegistrationNumber(source.getRegistrationNumber());
             carBO.setPrice(source.getPrice());
+            carBO.setId(source.getId());
         }
 
         return carBO;

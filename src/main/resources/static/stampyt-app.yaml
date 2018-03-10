@@ -37,7 +37,7 @@ paths:
         201:
           description: "Created"
           schema:
-            $ref: '#/definitions/DetailedGarage'
+            $ref: '#/definitions/GarageInfo'
         400:
           description: "Bad Request"
           schema:
@@ -70,12 +70,12 @@ paths:
         description: "Pet object that needs to be added to the store"
         required: true
         schema:
-          $ref: "#/definitions/Garage"
+          $ref: '#/definitions/GarageInfo'
       responses:
         200:
           description: "OK"
           schema:
-            $ref: '#/definitions/DetailedGarage'
+            $ref: '#/definitions/DetailedGarageInfo'
         400:
           description: "Bad Request"
           schema:
@@ -135,7 +135,7 @@ paths:
         200:
           description: "OK"
           schema:
-            $ref: '#/definitions/Car'
+            $ref: '#/definitions/DetailedGarage'
         400:
           description: "Bad Request"
           schema:
@@ -148,7 +148,8 @@ paths:
             $ref: "#/definitions/Error"
 
 definitions:
-  Garage:
+
+  GarageInfo:
     type: "object"
     required:
       - "name"
@@ -161,15 +162,31 @@ definitions:
         type: "string"
       maxCapacity:
         type: "integer"
-      cars:
-        type: "array"
-        items:
-          $ref: "#/definitions/Car"
+
+  DetailedGarageInfo:
+    allOf:
+      - properties:
+          garageId:
+            type: "string"
+          creationDate:
+            type: "string"
+            format: "date-time"
+      - $ref: '#/definitions/GarageInfo'
+
+
+  Garage:
+    allOf:
+      - $ref: '#/definitions/GarageInfo'
+      - properties:
+          cars:
+            type: "array"
+            items:
+              $ref: "#/definitions/Car"
 
   DetailedGarage:
     allOf:
       - properties:
-          garage-id:
+          garageId:
             type: "string"
           creationDate:
             type: "string"
@@ -179,7 +196,7 @@ definitions:
           cars:
             type: "array"
             items:
-              $ref: '#/definitions/Car'
+              $ref: '#/definitions/DetailedCar'
 
   Car:
     type: "object"
@@ -205,13 +222,23 @@ definitions:
       price:
         type: "number"
 
+  DetailedCar:
+    allOf:
+      - properties:
+          carId:
+            type: "string"
+          creationDate:
+            type: "string"
+            format: "date-time"
+      - $ref: "#/definitions/Car"
+
   Error:
     type: "object"
     required:
-      - "code"
-      - "message"
+      - "errorCode"
+      - "errorMessage"
     properties:
-      code:
+      errorCode:
         type: "string"
-      message:
+      errorMessage:
         type: "string"

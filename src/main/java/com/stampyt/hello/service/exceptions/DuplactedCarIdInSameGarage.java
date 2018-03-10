@@ -1,7 +1,7 @@
 package com.stampyt.hello.service.exceptions;
 
 public class DuplactedCarIdInSameGarage extends RuntimeException {
-    public DuplactedCarIdInSameGarage(String message, Throwable cause) {
-        super(message, cause);
+    public DuplactedCarIdInSameGarage(Throwable cause) {
+        super("Impossible to create multiple cars with the same registrationNumber.", cause);
     }
 }

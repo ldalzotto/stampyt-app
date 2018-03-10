@@ -40,8 +40,12 @@ public class GarageController {
 
     @RequestMapping(value = PATH_GARAGE_WITH_GARAGE_ID, method = RequestMethod.PUT)
     public GarageDTO updateGarage(@PathVariable(value = GARAGE_ID_PATH_VARIABLE_NAME) String garageId, @Valid @RequestBody GarageDTO garage) {
-        //TODO
-        return garage;
+        UUID garageIdValidated = this.validateIdFormat(garageId);
+        this.noCarsAllowed(garage);
+        garage.setGarageId(garageIdValidated);
+        GarageBO garageValuesToUpdate = this.garageDTO2BO.convert(garage);
+        GarageBO updatedGarage = this.garageService.updateGarage(garageIdValidated, garageValuesToUpdate);
+        return this.garageBO2DTO.convert(updatedGarage);
     }
 
     @RequestMapping(value = PATH_GARAGE_WITH_GARAGE_ID, method = RequestMethod.DELETE)
@@ -64,6 +68,14 @@ public class GarageController {
             return UUID.fromString(id);
         } catch (Exception e) {
             throw new InvalidIdFormat("The identifier " + id + " is malformed.", e);
+        }
+    }
+
+    private void noCarsAllowed(GarageDTO garageDTO) {
+        if (garageDTO != null && garageDTO.getCars() != null) {
+            if (garageDTO.getCars().size() > 0) {
+
+            }
         }
     }
 

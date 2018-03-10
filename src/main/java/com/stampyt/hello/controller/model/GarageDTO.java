@@ -9,7 +9,6 @@ import org.joda.time.DateTime;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,12 +17,10 @@ public class GarageDTO {
 
     private UUID garageId;
 
-    @NotNull(message = "Garage name should be provided.")
     private String name;
-    @NotNull(message = "Garage address should be provided.")
+
     private String address;
 
-    @NotNull(message = "Garage max capacity should be provided.")
     @Min(value = 1, message = "Garage max capacity should be > 0.")
     private Integer maxCapacity;
 
