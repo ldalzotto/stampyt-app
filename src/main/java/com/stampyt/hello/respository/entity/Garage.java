@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@org.hibernate.annotations.Entity(
+        dynamicUpdate = true
+)
 public class Garage {
 
     @Id

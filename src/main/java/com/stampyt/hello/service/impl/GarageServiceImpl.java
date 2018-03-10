@@ -1,6 +1,7 @@
 package com.stampyt.hello.service.impl;
 
 import com.stampyt.hello.repository.GarageRepository;
+import com.stampyt.hello.repository.GarageUpdateRepository;
 import com.stampyt.hello.respository.entity.Garage;
 import com.stampyt.hello.service.GarageService;
 import com.stampyt.hello.service.converter.garage.Garage2GarageBO;
@@ -10,22 +11,23 @@ import com.stampyt.hello.service.model.GarageBO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 public class GarageServiceImpl implements GarageService {
 
-    public GarageServiceImpl(GarageRepository garageRepository, GarageBO2Garage garageBO2Garage, Garage2GarageBO garage2GarageBO) {
+    public GarageServiceImpl(GarageRepository garageRepository, GarageBO2Garage garageBO2Garage, Garage2GarageBO garage2GarageBO, GarageUpdateRepository garageUpdateRepository) {
         this.garageRepository = garageRepository;
         this.garageBO2Garage = garageBO2Garage;
         this.garage2GarageBO = garage2GarageBO;
+        this.garageUpdateRepository = garageUpdateRepository;
     }
 
     private GarageRepository garageRepository;
     private GarageBO2Garage garageBO2Garage;
     private Garage2GarageBO garage2GarageBO;
+    private GarageUpdateRepository garageUpdateRepository;
 
     @Override
     public GarageBO createGarage(GarageBO garage) {
@@ -36,13 +38,16 @@ public class GarageServiceImpl implements GarageService {
     }
 
     @Override
-    @Transactional
     public GarageBO updateGarage(UUID garageId, GarageBO garageValuesToUpdate) {
-        int rowsAffected = this.garageRepository.updateGarageDetails(garageId, garageValuesToUpdate.getName(),
-                garageValuesToUpdate.getAddress(), garageValuesToUpdate.getCarStorageLimit());
-        if (rowsAffected == 0) {
-            throw new GarageNotFound(garageId.toString());
-        }
+        garageValuesToUpdate.setId(garageId);
+        Garage updatedGarage = this.garageUpdateRepository.save(this.garageBO2Garage.convert(garageValuesToUpdate));
+        //int rowsAffected = this.garageRepository.updateGarageDetails(garageId, garageValuesToUpdate.getName(),
+        //      garageValuesToUpdate.getAddress(), garageValuesToUpdate.getCarStorageLimit());
+        /**
+         if (rowsAffected == 0) {
+         throw new GarageNotFound(garageId.toString());
+         }
+         **/
         return garageValuesToUpdate;
     }
 
