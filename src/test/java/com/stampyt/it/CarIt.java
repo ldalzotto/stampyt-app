@@ -1,12 +1,12 @@
 package com.stampyt.it;
 
+import com.stampyt.Application;
 import com.stampyt.EnvironmentVariableInitializer;
-import com.stampyt.hello.Application;
-import com.stampyt.hello.controller.constants.ResourcesConstants;
-import com.stampyt.hello.controller.model.CarDTO;
-import com.stampyt.hello.controller.model.CarsDTO;
-import com.stampyt.hello.controller.model.GarageCarNumberDTO;
-import com.stampyt.hello.controller.model.GarageDTO;
+import com.stampyt.controller.constants.ResourcesConstants;
+import com.stampyt.controller.model.CarDTO;
+import com.stampyt.controller.model.CarsDTO;
+import com.stampyt.controller.model.GarageCarNumberDTO;
+import com.stampyt.controller.model.GarageDTO;
 import com.stampyt.it.jdd.GarageDTOProvider;
 import com.stampyt.it.jdd.GetCarsFilterAsserter;
 import com.stampyt.it.jdd.JDDAsserter;
@@ -87,6 +87,10 @@ public class CarIt {
         ResponseEntity<CarDTO> recoveredCar =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildCarBasePath(carId.toString()), CarDTO.class);
         Assert.assertEquals(HttpStatus.NOT_FOUND, recoveredCar.getStatusCode());
+
+        ResponseEntity<CarDTO> recoveredCar2 =
+                this.testRestTemplate.getForEntity(URIRessourceProvider.buildCarBasePath(carId.toString()), CarDTO.class);
+        Assert.assertEquals(HttpStatus.NOT_FOUND, recoveredCar2.getStatusCode());
     }
 
     @Test
@@ -149,6 +153,11 @@ public class CarIt {
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE, CarsDTO.class);
         Assert.assertEquals(HttpStatus.OK, cars.getStatusCode());
         Assert.assertEquals(cars.getBody().getCars().size(), 0);
+
+        ResponseEntity<CarsDTO> cars2 =
+                this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE, CarsDTO.class);
+        Assert.assertEquals(HttpStatus.OK, cars2.getStatusCode());
+        Assert.assertEquals(cars2.getBody().getCars().size(), 0);
     }
 
 

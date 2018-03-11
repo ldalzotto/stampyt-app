@@ -1,6 +1,7 @@
 package com.stampyt.it.jdd;
 
-import com.stampyt.hello.controller.constants.ResourcesConstants;
+
+import com.stampyt.controller.constants.ResourcesConstants;
 
 public class URIRessourceProvider {
 

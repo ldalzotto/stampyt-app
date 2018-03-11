@@ -1,9 +1,9 @@
 package com.stampyt.it.jdd;
 
-import com.stampyt.hello.controller.handler.ExceptionMessage;
-import com.stampyt.hello.controller.model.CarDTO;
-import com.stampyt.hello.controller.model.GarageCarNumberDTO;
-import com.stampyt.hello.controller.model.GarageDTO;
+import com.stampyt.controller.handler.ExceptionMessage;
+import com.stampyt.controller.model.CarDTO;
+import com.stampyt.controller.model.GarageCarNumberDTO;
+import com.stampyt.controller.model.GarageDTO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;

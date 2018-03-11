@@ -1,6 +1,7 @@
 package com.stampyt.it.jdd;
 
-import com.stampyt.hello.controller.model.CarsDTO;
+
+import com.stampyt.controller.model.CarsDTO;
 import org.junit.Assert;
 
 public class GetCarsFilterAsserter {

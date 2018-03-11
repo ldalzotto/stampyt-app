@@ -1,9 +1,9 @@
 package com.stampyt.it;
 
+import com.stampyt.Application;
 import com.stampyt.EnvironmentVariableInitializer;
-import com.stampyt.hello.Application;
-import com.stampyt.hello.controller.handler.ExceptionMessage;
-import com.stampyt.hello.controller.handler.RestErrorHandler;
+import com.stampyt.controller.handler.ExceptionMessage;
+import com.stampyt.controller.handler.RestErrorHandler;
 import com.stampyt.it.jdd.JDDAsserter;
 import com.stampyt.it.jdd.URIRessourceProvider;
 import org.junit.Assert;

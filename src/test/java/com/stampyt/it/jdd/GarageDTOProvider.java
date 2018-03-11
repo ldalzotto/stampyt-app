@@ -1,8 +1,9 @@
 package com.stampyt.it.jdd;
 
-import com.stampyt.hello.controller.constants.ResourcesConstants;
-import com.stampyt.hello.controller.model.CarDTO;
-import com.stampyt.hello.controller.model.GarageDTO;
+
+import com.stampyt.controller.constants.ResourcesConstants;
+import com.stampyt.controller.model.CarDTO;
+import com.stampyt.controller.model.GarageDTO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.joda.time.DateTime;
