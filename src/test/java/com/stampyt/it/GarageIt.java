@@ -94,7 +94,6 @@ public class GarageIt {
         UUID insertedGarageId = generatedGarage.getGarageId();
 
         GarageDTO garageDetailsToUpdate = GarageDTOProvider.generateGarageDetails("AnotherName", null, null);
-        garageDetailsToUpdate.setGarageId(insertedGarageId);
         testRestTemplate.put(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), garageDetailsToUpdate);
         ResponseEntity<GarageDTO> updatedGarageResponse = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), GarageDTO.class);
 

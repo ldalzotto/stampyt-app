@@ -38,7 +38,7 @@ paths:
         201:
           description: "Created"
           schema:
-            $ref: '#/definitions/GarageInfo'
+            $ref: '#/definitions/DetailedGarage'
         400:
           description: "Bad Request"
           schema:
@@ -73,10 +73,8 @@ paths:
         schema:
           $ref: '#/definitions/GarageInfo'
       responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: '#/definitions/DetailedGarageInfo'
+        204:
+          description: "No Content"
         400:
           description: "Bad Request"
           schema:
@@ -154,8 +152,6 @@ paths:
       summary: "Get garage's number of cars."
       description: ""
       operationId: "getCarNumber"
-      consumes:
-      - "application/json"
       produces:
       - "application/json"
       parameters:
@@ -301,10 +297,8 @@ paths:
         schema:
           $ref: "#/definitions/CarRegistrationNumber"
       responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: '#/definitions/CarRegistrationNumberWithId'
+        204:
+          description: "No Content"
         400:
           description: "Bad Request"
           schema:
@@ -395,10 +389,6 @@ definitions:
 
   GarageInfo:
     type: "object"
-    required:
-      - "name"
-      - "address"
-      - "maxCapacity"
     properties:
       name:
         type: "string"
@@ -465,13 +455,6 @@ definitions:
 
   Car:
     type: "object"
-    required:
-      - "registrationNumber"
-      - "brand"
-      - "model"
-      - "color"
-      - "commisioningDate"
-      - "price"
     properties:
       registrationNumber:
         type: "string"
