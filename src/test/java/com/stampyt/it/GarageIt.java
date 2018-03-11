@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,7 +43,7 @@ public class GarageIt {
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(false);
         ResponseEntity<GarageDTO> response = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
 
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         GarageDTO responseGarage = response.getBody();
 
         JDDAsserter.assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
@@ -56,7 +58,7 @@ public class GarageIt {
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(true);
         ResponseEntity<GarageDTO> response = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
 
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
         GarageDTO responseGarage = response.getBody();
 
         JDDAsserter.assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
@@ -69,7 +71,7 @@ public class GarageIt {
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(true);
         UUID garageId = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class).getBody().getGarageId();
         ResponseEntity<GarageDTO> response = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()), GarageDTO.class);
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         GarageDTO responseGarage = response.getBody();
         Assert.assertNotNull(responseGarage);
         Assert.assertEquals(responseGarage.getGarageId(), garageId);
@@ -83,7 +85,7 @@ public class GarageIt {
 
         ResponseEntity<GarageDTO> responseAfterDelete = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), GarageDTO.class);
 
-        Assert.assertEquals(responseAfterDelete.getStatusCode(), HttpStatus.NOT_FOUND);
+        Assert.assertEquals(HttpStatus.NOT_FOUND, responseAfterDelete.getStatusCode());
     }
 
     @Test
@@ -94,10 +96,16 @@ public class GarageIt {
         UUID insertedGarageId = generatedGarage.getGarageId();
 
         GarageDTO garageDetailsToUpdate = GarageDTOProvider.generateGarageDetails("AnotherName", null, null);
-        testRestTemplate.put(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), garageDetailsToUpdate);
+
+        ResponseEntity<Void> response =
+                testRestTemplate.exchange(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), HttpMethod.PUT, new HttpEntity<>(garageDetailsToUpdate),
+                        Void.class);
+        Assert.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        Assert.assertNull(response.getBody());
+
         ResponseEntity<GarageDTO> updatedGarageResponse = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), GarageDTO.class);
 
-        Assert.assertEquals(updatedGarageResponse.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, updatedGarageResponse.getStatusCode());
 
         generatedGarage.setName("AnotherName");
         JDDAsserter.assertGarageDetails(generatedGarage, updatedGarageResponse.getBody(), timeBeforeApiCall);

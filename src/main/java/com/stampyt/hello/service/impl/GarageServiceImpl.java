@@ -11,12 +11,17 @@ import com.stampyt.hello.service.exceptions.GarageNotFound;
 import com.stampyt.hello.service.model.GarageBO;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class GarageServiceImpl implements GarageService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GarageServiceImpl.class);
 
     public GarageServiceImpl(GarageRepository garageRepository, GarageBO2Garage garageBO2Garage, Garage2GarageBO garage2GarageBO, GarageUpdateRepository garageUpdateRepository) {
         this.garageRepository = garageRepository;
@@ -51,7 +56,11 @@ public class GarageServiceImpl implements GarageService {
 
     @Override
     public boolean deleteGarage(UUID garageId) {
-        this.garageRepository.delete(garageId);
+        try {
+            this.garageRepository.delete(garageId);
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+        }
         return true;
     }
 

@@ -17,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,7 +43,7 @@ public class CarIt {
         UUID garageId = insertedGarage.getGarageId();
         ResponseEntity<GarageCarNumberDTO> garageCarNumberDTO =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_NUMBER_RESSOURCE, GarageCarNumberDTO.class);
-        Assert.assertEquals(garageCarNumberDTO.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, garageCarNumberDTO.getStatusCode());
 
         GarageCarNumberDTO awaitedResult = new GarageCarNumberDTO();
         awaitedResult.setGarageId(garageId);
@@ -59,7 +61,7 @@ public class CarIt {
 
         ResponseEntity<CarDTO> savedCar =
                 this.testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.PATH_CAR, randomCar, CarDTO.class);
-        Assert.assertEquals(savedCar.getStatusCode(), HttpStatus.CREATED);
+        Assert.assertEquals(HttpStatus.CREATED, savedCar.getStatusCode());
         JDDAsserter.assertCarDetails(randomCar, savedCar.getBody());
         Assert.assertNotNull(savedCar.getBody().getCardId());
     }
@@ -70,7 +72,7 @@ public class CarIt {
         UUID carId = savedCar.getCardId();
         ResponseEntity<CarDTO> recoveredCar =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildCarBasePath(carId.toString()), CarDTO.class);
-        Assert.assertEquals(recoveredCar.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, recoveredCar.getStatusCode());
         JDDAsserter.assertCarDetails(recoveredCar.getBody(), savedCar);
     }
 
@@ -81,7 +83,7 @@ public class CarIt {
         this.testRestTemplate.delete(URIRessourceProvider.buildCarBasePath(carId.toString()));
         ResponseEntity<CarDTO> recoveredCar =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildCarBasePath(carId.toString()), CarDTO.class);
-        Assert.assertEquals(recoveredCar.getStatusCode(), HttpStatus.NOT_FOUND);
+        Assert.assertEquals(HttpStatus.NOT_FOUND, recoveredCar.getStatusCode());
     }
 
     @Test
@@ -92,7 +94,11 @@ public class CarIt {
         CarDTO modifiedValues = new CarDTO();
         modifiedValues.setRegistrationNumber("MyNumber");
 
-        this.testRestTemplate.put(URIRessourceProvider.buildCarBasePath(carId.toString()), modifiedValues, CarDTO.class);
+        ResponseEntity<Void> response =
+                this.testRestTemplate.exchange(URIRessourceProvider.buildCarBasePath(carId.toString()), HttpMethod.PUT, new HttpEntity<>(modifiedValues), Void.class);
+
+        Assert.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        Assert.assertNull(response.getBody());
 
         savedCar.setRegistrationNumber("MyNumber");
         ResponseEntity<CarDTO> recoveredCar =
@@ -108,7 +114,7 @@ public class CarIt {
         UUID garageId = insertedGarage.getGarageId();
         ResponseEntity<CarsDTO> cars =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE, CarsDTO.class);
-        Assert.assertEquals(cars.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, cars.getStatusCode());
         JDDAsserter.assertCarsDetails(cars.getBody().getCars(), insertedGarage.getCars());
     }
 
@@ -119,7 +125,7 @@ public class CarIt {
         this.testRestTemplate.delete(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE);
         ResponseEntity<CarsDTO> cars =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE, CarsDTO.class);
-        Assert.assertEquals(cars.getStatusCode(), HttpStatus.OK);
+        Assert.assertEquals(HttpStatus.OK, cars.getStatusCode());
         Assert.assertEquals(cars.getBody().getCars().size(), 0);
     }
 

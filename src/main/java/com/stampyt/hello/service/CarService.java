@@ -1,5 +1,6 @@
 package com.stampyt.hello.service;
 
+import com.stampyt.hello.service.exceptions.NoCarFoundForGarage;
 import com.stampyt.hello.service.model.CarBO;
 
 import java.util.Set;
@@ -7,7 +8,7 @@ import java.util.UUID;
 
 public interface CarService {
 
-    Integer getCarNumber(UUID garageId);
+    Integer getCarNumber(UUID garageId) throws NoCarFoundForGarage;
 
     CarBO addCar(UUID garageId, CarBO car);
 

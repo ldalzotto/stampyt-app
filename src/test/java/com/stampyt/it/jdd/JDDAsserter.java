@@ -1,5 +1,6 @@
 package com.stampyt.it.jdd;
 
+import com.stampyt.hello.controller.handler.ExceptionMessage;
 import com.stampyt.hello.controller.model.CarDTO;
 import com.stampyt.hello.controller.model.GarageCarNumberDTO;
 import com.stampyt.hello.controller.model.GarageDTO;
@@ -21,7 +22,7 @@ public class JDDAsserter {
         Assert.assertEquals(responseGarage.getCreationDate().getZone(), DateTimeZone.UTC);
         Assert.assertNotNull(responseGarage.getGarageId().toString());
         if (inputGarage.getCars() != null && inputGarage.getCars().size() > 0) {
-            assertCarsDetails(inputGarage.getCars(), responseGarage.getCars());
+            assertCarsDetails(responseGarage.getCars(), inputGarage.getCars());
         }
     }
 
@@ -40,17 +41,27 @@ public class JDDAsserter {
     }
 
     public static void assertCarDetails(CarDTO inputCar, CarDTO outputCar) {
-        Assert.assertEquals(inputCar.getBrand(), outputCar.getBrand());
-        Assert.assertEquals(inputCar.getColor(), outputCar.getColor());
-        Assert.assertEquals(inputCar.getModel(), outputCar.getModel());
-        Assert.assertEquals(inputCar.getPrice(), outputCar.getPrice());
-        Assert.assertEquals(inputCar.getCommisioningDate(), outputCar.getCommisioningDate());
-        Assert.assertEquals(inputCar.getRegistrationNumber(), outputCar.getRegistrationNumber());
+        Assert.assertEquals(outputCar.getBrand(), inputCar.getBrand());
+        Assert.assertEquals(outputCar.getColor(), inputCar.getColor());
+        Assert.assertEquals(outputCar.getModel(), inputCar.getModel());
+        Assert.assertEquals(outputCar.getPrice(), inputCar.getPrice());
+        Assert.assertEquals(outputCar.getCommisioningDate(), inputCar.getCommisioningDate());
+        Assert.assertEquals(outputCar.getRegistrationNumber(), inputCar.getRegistrationNumber());
     }
 
     public static void assertCarNumberDTO(GarageCarNumberDTO inputCarNumber, GarageCarNumberDTO outputCarNumber) {
-        Assert.assertEquals(inputCarNumber.getCarNumber(), outputCarNumber.getCarNumber());
-        Assert.assertEquals(inputCarNumber.getGarageId(), outputCarNumber.getGarageId());
+        Assert.assertEquals(outputCarNumber.getCarNumber(), inputCarNumber.getCarNumber());
+        Assert.assertEquals(outputCarNumber.getGarageId(), inputCarNumber.getGarageId());
+    }
+
+    public static void assertException(ExceptionMessage actual, String expectedMessage, String expectedCode) {
+
+        if (expectedMessage != null) {
+            Assert.assertEquals(expectedMessage, actual.getErrorMessage());
+        }
+        if (expectedCode != null) {
+            Assert.assertEquals(expectedCode, actual.getErrorCode());
+        }
     }
 
 }

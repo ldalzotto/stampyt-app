@@ -7,6 +7,7 @@ import com.stampyt.hello.controller.model.CarsDTO;
 import com.stampyt.hello.controller.model.GarageCarNumberDTO;
 import com.stampyt.hello.controller.valiator.ValidationUtil;
 import com.stampyt.hello.service.CarService;
+import com.stampyt.hello.service.exceptions.NoCarFoundForGarage;
 import com.stampyt.hello.service.model.CarBO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class CarController {
 
     @RequestMapping(value = PATH_GARAGE_WITH_GARAGE_ID + CAR_NUMBER_RESSOURCE, method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public GarageCarNumberDTO getCarNumber(@PathVariable(value = GARAGE_ID_PATH_VARIABLE_NAME) String garageId) {
+    public GarageCarNumberDTO getCarNumber(@PathVariable(value = GARAGE_ID_PATH_VARIABLE_NAME) String garageId) throws NoCarFoundForGarage {
         UUID validatedGarageId = ValidationUtil.validateIdFormat(garageId);
         Integer carNumber = this.carService.getCarNumber(validatedGarageId);
         GarageCarNumberDTO garageCarNumberDTO = new GarageCarNumberDTO();
@@ -70,13 +71,12 @@ public class CarController {
     }
 
     @RequestMapping(value = PATH_CAR_WITH_CAR_ID, method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.OK)
-    public CarDTO updateCar(@PathVariable(value = CAR_ID_PATH_VARIABLE_NAME) String carId, @Valid @RequestBody CarDTO car) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateCar(@PathVariable(value = CAR_ID_PATH_VARIABLE_NAME) String carId, @Valid @RequestBody CarDTO car) {
         UUID validatedCarId = ValidationUtil.validateIdFormat(carId);
         CarDTO registrationNumberCar = this.extractRegistrationNumberFromCar(car);
         registrationNumberCar.setCardId(validatedCarId);
-        CarBO retrievedCar = this.carService.updateCarDetails(validatedCarId, this.carDTO2BO.convert(registrationNumberCar));
-        return this.carBO2DTO.convert(retrievedCar);
+        this.carService.updateCarDetails(validatedCarId, this.carDTO2BO.convert(registrationNumberCar));
     }
 
     @RequestMapping(value = PATH_GARAGE_WITH_GARAGE_ID + CAR_ALL_RESSOURCE, method = RequestMethod.DELETE)

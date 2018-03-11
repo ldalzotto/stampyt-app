@@ -25,6 +25,7 @@ public class DateTimeWithZDeSerializer extends StdDeserializer<DateTime> {
     @Override
     public DateTime deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         String dateTime = p.getText();
+        DateTime deserializedDate = null;
         return dateTimeFormatter.parseDateTime(dateTime).withZone(DateTimeZone.UTC);
     }
 }

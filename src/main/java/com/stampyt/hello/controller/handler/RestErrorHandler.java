@@ -1,13 +1,11 @@
 package com.stampyt.hello.controller.handler;
 
-import com.stampyt.hello.service.exceptions.CarNotFound;
-import com.stampyt.hello.service.exceptions.GarageMaxCapacityNotDefined;
-import com.stampyt.hello.service.exceptions.GarageNotFound;
-import com.stampyt.hello.service.exceptions.InvalidArgumentException;
+import com.stampyt.hello.service.exceptions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,12 +20,12 @@ public class RestErrorHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestErrorHandler.class);
 
-    private static final String INVALID_FORMAT = "INVALID_FORMAT";
-    private static final String BAD_REQUEST = "BAD_REQUEST";
-    private static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
-    private static final String GARAGE_NOT_FOUND = "GARAGE_NOT_FOUND";
-    private static final String CAR_NOT_FOUND = "CAR_NOT_FOUND";
-    private static final String GARAGE_MAX_CAPACITY_UNDEFINED = "GARAGE_MAX_CAPACITY_UNDEFINED";
+    public static final String INVALID_FORMAT = "INVALID_FORMAT";
+    public static final String BAD_REQUEST = "BAD_REQUEST";
+    public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+    public static final String GARAGE_NOT_FOUND = "GARAGE_NOT_FOUND";
+    public static final String CAR_NOT_FOUND = "CAR_NOT_FOUND";
+    public static final String GARAGE_MAX_CAPACITY_UNDEFINED = "GARAGE_MAX_CAPACITY_UNDEFINED";
 
     @ExceptionHandler(GarageNotFound.class)
     public ResponseEntity<ExceptionMessage> handleGarageNotFound(HttpServletRequest request, GarageNotFound exception) {
@@ -53,6 +51,22 @@ public class RestErrorHandler {
         return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MaxGarageCapacityReached.class)
+    public ResponseEntity<ExceptionMessage> hangleMaxGarageCapacityReached(HttpServletRequest request, MaxGarageCapacityReached exception) {
+        LOGGER.error(exception.getMessage(), exception);
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage(BAD_REQUEST, exception.getMessage());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoCarFoundForGarage.class)
+    public ResponseEntity<ExceptionMessage> hangleNoCarFoundForGarage(HttpServletRequest request, NoCarFoundForGarage exception) {
+        LOGGER.error(exception.getMessage(), exception);
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage(CAR_NOT_FOUND, exception.getMessage());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InvalidArgumentException.class)
     public ResponseEntity<ExceptionMessage> hangleInvalidArgumentException(HttpServletRequest request, InvalidArgumentException exception) {
         LOGGER.error(exception.getMessage(), exception);
@@ -60,6 +74,15 @@ public class RestErrorHandler {
         ExceptionMessage exceptionMessage = new ExceptionMessage(BAD_REQUEST, exception.getMessage());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidIdFormat.class)
+    public ResponseEntity<ExceptionMessage> hangleInvalidIdFormat(HttpServletRequest request, InvalidIdFormat exception) {
+        LOGGER.error(exception.getMessage(), exception);
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage(BAD_REQUEST, exception.getMessage());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionMessage> handleInvalidArgument(HttpServletRequest request, MethodArgumentNotValidException exception) {
@@ -78,6 +101,14 @@ public class RestErrorHandler {
         }
         ExceptionMessage exceptionMessage = new ExceptionMessage(INVALID_FORMAT, errorMessage.toString());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionMessage> handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException exception) {
+        LOGGER.error(exception.getMessage(), exception);
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage(INTERNAL_SERVER_ERROR, exception.getMessage().split(";")[0]);
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)

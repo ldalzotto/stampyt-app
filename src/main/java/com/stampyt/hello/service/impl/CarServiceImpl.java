@@ -10,7 +10,11 @@ import com.stampyt.hello.service.converter.car.Car2CarBO;
 import com.stampyt.hello.service.converter.car.CarBO2Car;
 import com.stampyt.hello.service.exceptions.CarNotFound;
 import com.stampyt.hello.service.exceptions.MaxGarageCapacityReached;
+import com.stampyt.hello.service.exceptions.NoCarFoundForGarage;
 import com.stampyt.hello.service.model.CarBO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,8 @@ import java.util.UUID;
 
 @Service
 public class CarServiceImpl implements CarService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarServiceImpl.class);
 
     public CarServiceImpl(CarRepository carRepository, CarUpdateRepository carUpdateRepository, Car2CarBO car2CarBO, CarBO2Car carBO2Car, GarageService garageService) {
         this.carRepository = carRepository;
@@ -37,16 +43,25 @@ public class CarServiceImpl implements CarService {
     private GarageService garageService;
 
     @Override
-    public Integer getCarNumber(UUID garageId) {
+    public Integer getCarNumber(UUID garageId) throws NoCarFoundForGarage {
         Garage garage = new Garage();
         garage.setId(garageId);
-        return this.carRepository.countAllByGarage(garage);
+        Integer carNb = this.carRepository.countAllByGarage(garage);
+        if (carNb == 0) {
+            throw new NoCarFoundForGarage(garageId.toString());
+        }
+        return carNb;
     }
 
     @Override
     public CarBO addCar(UUID garageId, CarBO car) {
         Integer garageCapacity = this.garageService.getGarageMaxCapacity(garageId);
-        Integer currentCarNumber = this.getCarNumber(garageId);
+        Integer currentCarNumber = null;
+        try {
+            currentCarNumber = this.getCarNumber(garageId);
+        } catch (NoCarFoundForGarage noCarFoundForGarage) {
+            currentCarNumber = 0;
+        }
 
         if (garageCapacity <= currentCarNumber) {
             throw new MaxGarageCapacityReached(garageId, garageCapacity, currentCarNumber);
@@ -82,13 +97,21 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public boolean deleteAllCars(UUID garageId) {
         Garage garageIdRepo = this.buildGarageWithId(garageId);
-        this.carRepository.deleteCarsByGarage(garageIdRepo);
+        try {
+            this.carRepository.deleteCarsByGarage(garageIdRepo);
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+        }
         return true;
     }
 
     @Override
     public boolean deleteCar(UUID carId) {
-        this.carRepository.delete(carId);
+        try {
+            this.carRepository.delete(carId);
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn(e.getMessage(), e);
+        }
         return true;
     }
 

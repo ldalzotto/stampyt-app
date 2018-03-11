@@ -17,6 +17,7 @@ public class CarUpdateRepositoryImpl implements CarUpdateRepository {
     @Override
     @Transactional
     public Car save(Car car) {
+
         Car foundedCar = this.entityManager.find(Car.class, car.getId());
 
         if (foundedCar == null) {

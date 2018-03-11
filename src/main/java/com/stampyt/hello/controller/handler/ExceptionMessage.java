@@ -5,6 +5,9 @@ public class ExceptionMessage {
     private String errorCode;
     private String errorMessage;
 
+    public ExceptionMessage() {
+    }
+
     public ExceptionMessage(String errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;

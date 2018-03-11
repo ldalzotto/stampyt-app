@@ -41,6 +41,7 @@ public class GarageController {
     }
 
     @RequestMapping(value = PATH_GARAGE_WITH_GARAGE_ID, method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateGarage(@PathVariable(value = GARAGE_ID_PATH_VARIABLE_NAME) String garageId, @Valid @RequestBody GarageDTO garage) {
         UUID garageIdValidated = ValidationUtil.validateIdFormat(garageId);
         this.noCarsAllowed(garage);

@@ -6,6 +6,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,35 @@ public class GarageDTOProvider {
         carDTO.setCommisioningDate(DateTime.now(DateTimeZone.UTC));
         carDTO.setRegistrationNumber(RandomStringUtils.random(10));
         return carDTO;
+    }
+
+    public static ResponseEntity<GarageDTO> insertRandomGarage(boolean withCars, Integer carLimit, Integer nbOfCars, TestRestTemplate testRestTemplate) {
+        GarageDTO garageDTO;
+        if (nbOfCars == null) {
+            if (carLimit == null) {
+                garageDTO = GarageDTOProvider.generateGarage(withCars);
+            } else {
+                garageDTO = GarageDTOProvider.generateGarage(withCars, RandomUtils.nextInt(0, carLimit));
+            }
+        } else {
+            if (carLimit == null) {
+                garageDTO = GarageDTOProvider.generateGarage(withCars, nbOfCars);
+            } else {
+                garageDTO = GarageDTOProvider.generateGarage(withCars, nbOfCars);
+                garageDTO.setMaxCapacity(carLimit);
+            }
+        }
+        return testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
+    }
+
+
+    public static ResponseEntity<GarageDTO> insertGarage(GarageDTO garageDTO, TestRestTemplate testRestTemplate) {
+        return testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
+    }
+
+    public static ResponseEntity<GarageDTO> insertRandomGarage(boolean withCars, TestRestTemplate testRestTemplate) {
+        GarageDTO garageDTO = GarageDTOProvider.generateGarage(withCars);
+        return testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
     }
 
 }
