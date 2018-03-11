@@ -74,6 +74,7 @@ public class CarController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCar(@PathVariable(value = CAR_ID_PATH_VARIABLE_NAME) String carId, @Valid @RequestBody CarDTO car) {
         UUID validatedCarId = ValidationUtil.validateIdFormat(carId);
+        ValidationUtil.validatePresenceOfRegistrationNumberOnly(car);
         CarDTO registrationNumberCar = this.extractRegistrationNumberFromCar(car);
         registrationNumberCar.setCardId(validatedCarId);
         this.carService.updateCarDetails(validatedCarId, this.carDTO2BO.convert(registrationNumberCar));

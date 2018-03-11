@@ -5,6 +5,7 @@ import com.stampyt.hello.Application;
 import com.stampyt.hello.controller.handler.ExceptionMessage;
 import com.stampyt.hello.controller.handler.RestErrorHandler;
 import com.stampyt.hello.controller.model.CarDTO;
+import com.stampyt.hello.controller.model.GarageDTO;
 import com.stampyt.it.jdd.GarageDTOProvider;
 import com.stampyt.it.jdd.JDDAsserter;
 import com.stampyt.it.jdd.URIRessourceProvider;
@@ -37,11 +38,30 @@ public class PutCarsIt {
     private TestRestTemplate testRestTemplate;
 
     @Test
+    public void modifyCar_notAllowedModification() {
+        GarageDTO garageDTO = GarageDTOProvider.insertRandomGarage(true, testRestTemplate).getBody();
+        UUID garageId = garageDTO.getGarageId();
+
+        CarDTO generatedCar = GarageDTOProvider.generateRandomCar();
+        CarDTO createdCar = GarageDTOProvider.saveCar(generatedCar, garageId, testRestTemplate).getBody();
+        UUID carId = createdCar.getCardId();
+
+        CarDTO carValuesToSave = new CarDTO();
+        carValuesToSave.setBrand("TEST");
+
+        ResponseEntity<ExceptionMessage> response =
+                this.testRestTemplate.exchange(URIRessourceProvider.buildCarBasePath(carId.toString()), HttpMethod.PUT, new HttpEntity<>(carValuesToSave),
+                        ExceptionMessage.class);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    }
+
+    @Test
     public void modifyCar_unknwonCarId() {
 
         GarageDTOProvider.insertRandomGarage(true, testRestTemplate);
 
-        CarDTO generatedCar = GarageDTOProvider.generateRandomCar();
+        CarDTO generatedCar = new CarDTO();
 
         ResponseEntity<ExceptionMessage> response =
                 this.testRestTemplate.exchange(URIRessourceProvider.buildCarBasePath(UUID.randomUUID().toString()), HttpMethod.PUT, new HttpEntity<>(generatedCar),

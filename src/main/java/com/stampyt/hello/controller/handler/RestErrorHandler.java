@@ -11,6 +11,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -41,6 +42,16 @@ public class RestErrorHandler {
 
         ExceptionMessage exceptionMessage = new ExceptionMessage(CAR_NOT_FOUND, exception.getMessage());
         return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ExceptionMessage> handleMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException exception) {
+        LOGGER.error(exception.getMessage(), exception);
+
+        String messageError = "Field " + exception.getName() + " is malformed. Required type is : " + exception.getRequiredType().getName();
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage(INVALID_FORMAT, messageError);
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(GarageMaxCapacityNotDefined.class)

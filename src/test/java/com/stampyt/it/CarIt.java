@@ -8,6 +8,7 @@ import com.stampyt.hello.controller.model.CarsDTO;
 import com.stampyt.hello.controller.model.GarageCarNumberDTO;
 import com.stampyt.hello.controller.model.GarageDTO;
 import com.stampyt.it.jdd.GarageDTOProvider;
+import com.stampyt.it.jdd.GetCarsFilterAsserter;
 import com.stampyt.it.jdd.JDDAsserter;
 import com.stampyt.it.jdd.URIRessourceProvider;
 import org.junit.Assert;
@@ -23,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @RunWith(SpringRunner.class)
@@ -119,6 +122,25 @@ public class CarIt {
     }
 
     @Test
+    public void getAllCarsWithFilter_nominalTest() {
+        GarageDTO insertedGarage = this.generateGarage(true, 15, Arrays.asList("blue", "red"), 50f, 100f);
+        UUID garageId = insertedGarage.getGarageId();
+
+        //getting blue cars between 50 and 75;
+        ResponseEntity<CarsDTO> cars =
+                this.testRestTemplate
+                        .getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE
+                                + "?color=red&minPrice=50&maxPrice=75", CarsDTO.class);
+
+        Assert.assertEquals(HttpStatus.OK, cars.getStatusCode());
+
+        CarsDTO insertedCars = new CarsDTO();
+        insertedCars.setCars(insertedGarage.getCars());
+        GetCarsFilterAsserter.assertCars(cars.getBody(), insertedCars, "red", 50f, 75f);
+
+    }
+
+    @Test
     public void deleteAllCars_nominalTest() {
         GarageDTO insertedGarage = this.generateGarage(true, 5);
         UUID garageId = insertedGarage.getGarageId();
@@ -127,6 +149,13 @@ public class CarIt {
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.CAR_ALL_RESSOURCE, CarsDTO.class);
         Assert.assertEquals(HttpStatus.OK, cars.getStatusCode());
         Assert.assertEquals(cars.getBody().getCars().size(), 0);
+    }
+
+
+    private GarageDTO generateGarage(boolean withCar, Integer carNb, List<String> colorChoice, Float minPrice, Float maxPrice) {
+        GarageDTO genereatedGarage = GarageDTOProvider.generateGarage(withCar, carNb, colorChoice, minPrice, maxPrice);
+        ResponseEntity<GarageDTO> insertedGarage = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), genereatedGarage, GarageDTO.class);
+        return insertedGarage.getBody();
     }
 
     private GarageDTO generateGarage(boolean withCar, Integer carNb) {

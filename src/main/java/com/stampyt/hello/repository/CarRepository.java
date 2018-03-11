@@ -11,10 +11,10 @@ import java.util.UUID;
 public interface CarRepository extends CrudRepository<Car, UUID> {
 
     Integer countAllByGarage(Garage garageId);
-    
+
     void deleteCarsByGarage(Garage garageId);
 
-    @Query("select c from Car c where c.garage = ?1 and (?2 is null OR c.color = ?2) and (?3 is null OR c.price >= ?3) " +
+    @Query("select c from Car c where c.garage = ?1 and (?2 is null OR lower(c.color) = lower(?2) ) and (?3 is null OR c.price >= ?3) " +
             "and (?4 is null OR c.price <= ?4 )")
     List<Car> findCarsByGarageAndColorAndPriceGreaterThanEqualAndPriceLessThanEqual(Garage garageId, String color, Float minPrice,
                                                                                     Float maxPrice);
