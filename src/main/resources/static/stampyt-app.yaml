@@ -146,7 +146,250 @@ paths:
           description: "Internal Server Error"
           schema:
             $ref: "#/definitions/Error"
-
+  "/garage/{garage-id}/car-number":
+    get:
+      tags:
+      - "Car"
+      summary: "Get garage's number of cars."
+      description: ""
+      operationId: "getCarNumber"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "garage-id"
+        description: "Garage identifier"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/GarageCarNumber'
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
+  "/garage/{garage-id}/car":
+    post:
+      tags:
+      - "Car"
+      summary: "Create a car in the associated garage."
+      description: ""
+      operationId: "createCar"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "garage-id"
+        description: "Garage identifier"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "carDefinition"
+        description: "Pet object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Car"
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: '#/definitions/DetailedCar'
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
+  "/car/{car-id}":
+    delete:
+      tags:
+      - "Car"
+      summary: "Delete a single car."
+      description: ""
+      operationId: "deleteCar"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "car-id"
+        description: "Car identifier"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "No Content"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
+    get:
+      tags:
+      - "Car"
+      summary: "Get car detail."
+      description: ""
+      operationId: "getCar"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "car-id"
+        description: "Car identifier"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DetailedCar'
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+      - "Car"
+      summary: "Update car detail."
+      description: ""
+      operationId: "updateCar"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "car-id"
+        description: "Car identifier"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "carDefinition"
+        description: "Car values to update"
+        required: true
+        schema:
+          $ref: "#/definitions/CarRegistrationNumber"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/CarRegistrationNumberWithId'
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
+  "/garage/{garage-id}/car/all":
+    get:
+      tags:
+      - "Car"
+      summary: "get all cars associated to the garage."
+      description: ""
+      operationId: "getAllCars"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "garage-id"
+        description: "Garage identifier"
+        required: true
+        type: "string"
+      - in: "query"
+        name: "color"
+        description: "Car color"
+        required: false
+        type: "string"
+      - in: "query"
+        name: "minPrice"
+        description: "Minimum price"
+        required: false
+        type: "number"
+      - in: "query"
+        name: "maxPrice"
+        description: "Maximum price"
+        required: false
+        type: "number"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: '#/definitions/DetailedCars'
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+      - "Car"
+      summary: "Delete all cars associated to the garage."
+      description: ""
+      operationId: "deleteAllCars"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "garage-id"
+        description: "Garage identifier"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "No Content"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Not Found"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/Error"
 definitions:
 
   GarageInfo:
@@ -192,11 +435,32 @@ definitions:
             type: "string"
             format: "date-time"
       - $ref: "#/definitions/Garage"
+      - $ref: "#/definitions/DetailedCars"
+
+  GarageCarNumber:
+    type: "object"
+    required:
+      - "garageId"
+      - "carNumber"
+    properties:
+      garageId:
+        type: "string"
+      carNumber:
+        type: "integer"
+
+  CarRegistrationNumber:
+    type: "object"
+    properties:
+      registrationNumber:
+        type: "string"
+
+  CarRegistrationNumberWithId:
+    allOf:
       - properties:
-          cars:
-            type: "array"
-            items:
-              $ref: '#/definitions/DetailedCar'
+          carId:
+            type: "string"
+      - $ref: "#/definitions/CarRegistrationNumber"
+
 
   Car:
     type: "object"
@@ -231,6 +495,14 @@ definitions:
             type: "string"
             format: "date-time"
       - $ref: "#/definitions/Car"
+
+  DetailedCars:
+    type: "object"
+    properties:
+      cars:
+        type: "array"
+        items:
+          $ref: '#/definitions/DetailedCar'
 
   Error:
     type: "object"

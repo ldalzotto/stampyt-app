@@ -21,6 +21,10 @@ public class GarageUpdateRepositoryImpl implements GarageUpdateRepository {
 
         Garage foundedGarage = entityManager.find(Garage.class, garage.getId());
 
+        if (foundedGarage == null) {
+            return null;
+        }
+
         if (garage.getAddress() != null) {
             foundedGarage.setAddress(garage.getAddress());
         }
@@ -30,13 +34,7 @@ public class GarageUpdateRepositoryImpl implements GarageUpdateRepository {
         if (garage.getName() != null) {
             foundedGarage.setName(garage.getName());
         }
-
-        if (foundedGarage != null) {
-            return foundedGarage;
-        } else {
-            return null;
-        }
-
+        return foundedGarage;
 
     }
 }

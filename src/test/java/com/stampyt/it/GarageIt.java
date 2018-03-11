@@ -2,9 +2,10 @@ package com.stampyt.it;
 
 import com.stampyt.EnvironmentVariableInitializer;
 import com.stampyt.hello.Application;
-import com.stampyt.hello.controller.model.CarDTO;
 import com.stampyt.hello.controller.model.GarageDTO;
 import com.stampyt.it.jdd.GarageDTOProvider;
+import com.stampyt.it.jdd.JDDAsserter;
+import com.stampyt.it.jdd.URIRessourceProvider;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Assert;
@@ -38,11 +39,12 @@ public class GarageIt {
         DateTime timeBeforeApiCall = DateTime.now(DateTimeZone.UTC);
 
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(false);
-        ResponseEntity<GarageDTO> response = testRestTemplate.postForEntity("/garage", garageDTO, GarageDTO.class);
+        ResponseEntity<GarageDTO> response = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         GarageDTO responseGarage = response.getBody();
 
-        assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
+        JDDAsserter.assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
 
     }
 
@@ -52,11 +54,12 @@ public class GarageIt {
         DateTime timeBeforeApiCall = DateTime.now(DateTimeZone.UTC);
 
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(true);
-        ResponseEntity<GarageDTO> response = testRestTemplate.postForEntity("/garage", garageDTO, GarageDTO.class);
+        ResponseEntity<GarageDTO> response = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
+
         Assert.assertEquals(response.getStatusCode(), HttpStatus.CREATED);
         GarageDTO responseGarage = response.getBody();
 
-        assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
+        JDDAsserter.assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
 
     }
 
@@ -64,20 +67,22 @@ public class GarageIt {
     public void getGarage_nominalTest() {
         DateTime timeBeforeApiCall = DateTime.now(DateTimeZone.UTC);
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(true);
-        UUID garageId = testRestTemplate.postForEntity("/garage", garageDTO, GarageDTO.class).getBody().getGarageId();
-        ResponseEntity<GarageDTO> response = testRestTemplate.getForEntity("/garage/" + garageId.toString(), GarageDTO.class);
+        UUID garageId = testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class).getBody().getGarageId();
+        ResponseEntity<GarageDTO> response = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()), GarageDTO.class);
         Assert.assertEquals(response.getStatusCode(), HttpStatus.OK);
         GarageDTO responseGarage = response.getBody();
         Assert.assertNotNull(responseGarage);
         Assert.assertEquals(responseGarage.getGarageId(), garageId);
-        assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
+        JDDAsserter.assertGarageDetails(garageDTO, responseGarage, timeBeforeApiCall);
     }
 
     @Test
     public void deleteCar_nominalTest() {
         UUID insertedGarageId = this.insertRandomGarage(true).getBody().getGarageId();
-        testRestTemplate.delete("/garage/" + insertedGarageId.toString());
-        ResponseEntity<GarageDTO> responseAfterDelete = testRestTemplate.getForEntity("/garage/" + insertedGarageId.toString(), GarageDTO.class);
+        testRestTemplate.delete(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()));
+
+        ResponseEntity<GarageDTO> responseAfterDelete = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), GarageDTO.class);
+
         Assert.assertEquals(responseAfterDelete.getStatusCode(), HttpStatus.NOT_FOUND);
     }
 
@@ -90,50 +95,19 @@ public class GarageIt {
 
         GarageDTO garageDetailsToUpdate = GarageDTOProvider.generateGarageDetails("AnotherName", null, null);
         garageDetailsToUpdate.setGarageId(insertedGarageId);
-        testRestTemplate.put("/garage/" + insertedGarageId.toString(), garageDetailsToUpdate);
-        ResponseEntity<GarageDTO> updatedGarageResponse = testRestTemplate.getForEntity("/garage/" + insertedGarageId.toString(), GarageDTO.class);
+        testRestTemplate.put(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), garageDetailsToUpdate);
+        ResponseEntity<GarageDTO> updatedGarageResponse = testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath(insertedGarageId.toString()), GarageDTO.class);
+
         Assert.assertEquals(updatedGarageResponse.getStatusCode(), HttpStatus.OK);
 
         generatedGarage.setName("AnotherName");
-        this.assertGarageDetails(generatedGarage, updatedGarageResponse.getBody(), timeBeforeApiCall);
-    }
-
-    private void assertGarageDetails(GarageDTO inputGarage, GarageDTO responseGarage, DateTime timeBeforeApiCall) {
-        Assert.assertNotNull(responseGarage);
-        Assert.assertEquals(responseGarage.getAddress(), inputGarage.getAddress());
-        Assert.assertEquals(responseGarage.getMaxCapacity(), inputGarage.getMaxCapacity());
-        Assert.assertEquals(responseGarage.getName(), inputGarage.getName());
-        Assert.assertTrue(responseGarage.getCreationDate().compareTo(timeBeforeApiCall) == 0 ||
-                responseGarage.getCreationDate().compareTo(timeBeforeApiCall) > 0);
-        Assert.assertEquals(responseGarage.getCreationDate().getZone(), DateTimeZone.UTC);
-        Assert.assertNotNull(responseGarage.getGarageId().toString());
-        if (inputGarage.getCars() != null && inputGarage.getCars().size() > 0) {
-            Assert.assertEquals(inputGarage.getCars().size(), responseGarage.getCars().size());
-            for (CarDTO inputCars :
-                    inputGarage.getCars()) {
-                for (CarDTO outputCars :
-                        responseGarage.getCars()) {
-                    inputCars.setCardId(outputCars.getCardId());
-                    if (inputCars.equals(outputCars)) {
-                        this.assertCarDetails(inputCars, outputCars);
-                    }
-                }
-            }
-        }
-    }
-
-    private void assertCarDetails(CarDTO inputCar, CarDTO outputCar) {
-        Assert.assertEquals(inputCar.getBrand(), outputCar.getBrand());
-        Assert.assertEquals(inputCar.getColor(), outputCar.getColor());
-        Assert.assertEquals(inputCar.getModel(), outputCar.getModel());
-        Assert.assertEquals(inputCar.getPrice(), outputCar.getPrice());
-        Assert.assertEquals(inputCar.getCommisioningDate(), outputCar.getCommisioningDate());
-        Assert.assertEquals(inputCar.getRegistrationNumber(), outputCar.getRegistrationNumber());
+        JDDAsserter.assertGarageDetails(generatedGarage, updatedGarageResponse.getBody(), timeBeforeApiCall);
     }
 
     private ResponseEntity<GarageDTO> insertRandomGarage(boolean withCars) {
         GarageDTO garageDTO = GarageDTOProvider.generateGarage(withCars);
-        return testRestTemplate.postForEntity("/garage", garageDTO, GarageDTO.class);
+        return testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(), garageDTO, GarageDTO.class);
     }
+
 
 }

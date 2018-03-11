@@ -6,6 +6,7 @@ import com.stampyt.hello.respository.entity.Garage;
 import com.stampyt.hello.service.GarageService;
 import com.stampyt.hello.service.converter.garage.Garage2GarageBO;
 import com.stampyt.hello.service.converter.garage.GarageBO2Garage;
+import com.stampyt.hello.service.exceptions.GarageMaxCapacityNotDefined;
 import com.stampyt.hello.service.exceptions.GarageNotFound;
 import com.stampyt.hello.service.model.GarageBO;
 import org.joda.time.DateTime;
@@ -41,13 +42,10 @@ public class GarageServiceImpl implements GarageService {
     public GarageBO updateGarage(UUID garageId, GarageBO garageValuesToUpdate) {
         garageValuesToUpdate.setId(garageId);
         Garage updatedGarage = this.garageUpdateRepository.save(this.garageBO2Garage.convert(garageValuesToUpdate));
-        //int rowsAffected = this.garageRepository.updateGarageDetails(garageId, garageValuesToUpdate.getName(),
-        //      garageValuesToUpdate.getAddress(), garageValuesToUpdate.getCarStorageLimit());
-        /**
-         if (rowsAffected == 0) {
-         throw new GarageNotFound(garageId.toString());
-         }
-         **/
+        if (updatedGarage == null) {
+            throw new GarageNotFound(garageId.toString());
+        }
+
         return garageValuesToUpdate;
     }
 
@@ -67,9 +65,13 @@ public class GarageServiceImpl implements GarageService {
     }
 
     @Override
-    public Integer getCarNumber(UUID garageId) {
-        //TODO
-        return null;
+    public Integer getGarageMaxCapacity(UUID garageId) {
+        Integer maxCapacity = this.garageRepository.findCarStorageLimit(garageId);
+        if (maxCapacity == null) {
+            throw new GarageMaxCapacityNotDefined(garageId);
+
+        }
+        return maxCapacity;
     }
 
     private GarageBO prepareGarageForCreate(GarageBO garageBO) {

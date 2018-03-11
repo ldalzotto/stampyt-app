@@ -13,9 +13,16 @@ import java.util.List;
 public class GarageDTOProvider {
 
     public static GarageDTO generateGarage(boolean withCars) {
+        return GarageDTOProvider.generateGarage(withCars, null);
+    }
+
+    public static GarageDTO generateGarage(boolean withCars, Integer carNb) {
         GarageDTO garageDTO = generateRandomGarage();
         if (withCars) {
-            garageDTO = addRandomCars(garageDTO, 3);
+            if (carNb == null) {
+                carNb = RandomUtils.nextInt(1, 10);
+            }
+            garageDTO = addRandomCars(garageDTO, carNb);
         }
         return garageDTO;
     }
@@ -55,7 +62,7 @@ public class GarageDTOProvider {
         return garageDTO;
     }
 
-    private static CarDTO generateRandomCar() {
+    public static CarDTO generateRandomCar() {
         CarDTO carDTO = new CarDTO();
         carDTO.setPrice(RandomUtils.nextFloat(0.1F, Float.MAX_VALUE));
         carDTO.setModel(RandomStringUtils.random(10));

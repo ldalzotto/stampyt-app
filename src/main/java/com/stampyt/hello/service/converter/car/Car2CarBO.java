@@ -16,7 +16,9 @@ public class Car2CarBO implements Converter<Car, CarBO> {
         if (source != null) {
             carBO.setBrand(source.getBrand());
             carBO.setColor(source.getColor());
-            carBO.setCommisioningDate(new DateTime(source.getCommisioningDate()));
+            if (source.getCommisioningDate() != null) {
+                carBO.setCommisioningDate(new DateTime(source.getCommisioningDate()));
+            }
             carBO.setModel(source.getModel());
             carBO.setRegistrationNumber(source.getRegistrationNumber());
             carBO.setPrice(source.getPrice());

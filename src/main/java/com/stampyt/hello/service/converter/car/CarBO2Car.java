@@ -12,9 +12,12 @@ public class CarBO2Car implements Converter<CarBO, Car> {
     public Car convert(CarBO source) {
         Car car = new Car();
         if (source != null) {
+            car.setId(source.getId());
             car.setBrand(source.getBrand());
             car.setColor(source.getColor());
-            car.setCommisioningDate(source.getCommisioningDate().toDate());
+            if (source.getCommisioningDate() != null) {
+                car.setCommisioningDate(source.getCommisioningDate().toDate());
+            }
             car.setModel(source.getModel());
             car.setRegistrationNumber(source.getRegistrationNumber());
             car.setPrice(source.getPrice());

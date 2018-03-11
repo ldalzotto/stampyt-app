@@ -1,5 +1,7 @@
 package com.stampyt.hello.controller.handler;
 
+import com.stampyt.hello.service.exceptions.CarNotFound;
+import com.stampyt.hello.service.exceptions.GarageMaxCapacityNotDefined;
 import com.stampyt.hello.service.exceptions.GarageNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,8 @@ public class RestErrorHandler {
     private static final String INVALID_FORMAT = "INVALID_FORMAT";
     private static final String BAD_REQUEST = "BAD_REQUEST";
     private static final String GARAGE_NOT_FOUND = "GARAGE_NOT_FOUND";
-
+    private static final String CAR_NOT_FOUND = "CAR_NOT_FOUND";
+    private static final String GARAGE_MAX_CAPACITY_UNDEFINED = "GARAGE_MAX_CAPACITY_UNDEFINED";
 
     @ExceptionHandler(GarageNotFound.class)
     public ResponseEntity<ExceptionMessage> handleGarageNotFound(HttpServletRequest request, GarageNotFound exception) {
@@ -26,6 +29,17 @@ public class RestErrorHandler {
         return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CarNotFound.class)
+    public ResponseEntity<ExceptionMessage> handleCarNotFound(HttpServletRequest request, CarNotFound exception) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(CAR_NOT_FOUND, exception.getMessage());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GarageMaxCapacityNotDefined.class)
+    public ResponseEntity<ExceptionMessage> hangleGarageMaxCapacityNotDefined(HttpServletRequest request, GarageMaxCapacityNotDefined exception) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(GARAGE_MAX_CAPACITY_UNDEFINED, exception.getMessage());
+        return new ResponseEntity<>(exceptionMessage, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionMessage> handleInvalidArgument(HttpServletRequest request, MethodArgumentNotValidException exception) {

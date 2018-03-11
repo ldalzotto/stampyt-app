@@ -1,4 +1,11 @@
 package com.stampyt.hello.service.exceptions;
 
-public class MaxGarageCapacityReached extends Exception {
+import java.util.UUID;
+
+public class MaxGarageCapacityReached extends RuntimeException {
+
+    public MaxGarageCapacityReached(UUID garageId, Integer maxCapacity, Integer currentCapacity) {
+        super("Cannot add any more car on garage : " + garageId.toString() + ". Storage limit already reached ! MaxCapacity : " +
+                maxCapacity + ", currentNumberOfCars : " + currentCapacity);
+    }
 }
