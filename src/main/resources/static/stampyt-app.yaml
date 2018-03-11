@@ -16,7 +16,7 @@ schemes:
 - "http"
 - "https"
 paths:
-  "/garage":
+  "/garages":
     post:
       tags:
       - "Garage"
@@ -49,7 +49,7 @@ paths:
           description: "Internal Server Error"
           schema:
             $ref: "#/definitions/Error"
-  "/garage/{garage-id}":
+  "/garages/{garage-id}":
     put:
       tags:
       - "Garage"
@@ -147,7 +147,7 @@ paths:
           description: "Internal Server Error"
           schema:
             $ref: "#/definitions/Error"
-  "/garage/{garage-id}/car-number":
+  "/garages/{garage-id}/car-number":
     get:
       tags:
       - "Car"
@@ -179,7 +179,7 @@ paths:
           description: "Internal Server Error"
           schema:
             $ref: "#/definitions/Error"
-  "/garage/{garage-id}/car":
+  "/garages/{garage-id}/cars":
     post:
       tags:
       - "Car"
@@ -217,7 +217,7 @@ paths:
           description: "Internal Server Error"
           schema:
             $ref: "#/definitions/Error"
-  "/car/{car-id}":
+  "/cars/{car-id}":
     delete:
       tags:
       - "Car"
@@ -315,7 +315,7 @@ paths:
           description: "Internal Server Error"
           schema:
             $ref: "#/definitions/Error"
-  "/garage/{garage-id}/car/all":
+  "/garages/{garage-id}/cars/all":
     get:
       tags:
       - "Car"

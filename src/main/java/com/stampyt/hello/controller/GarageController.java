@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 import static com.stampyt.hello.controller.constants.ResourcesConstants.GARAGE_ID_PATH_VARIABLE_NAME;
+import static com.stampyt.hello.controller.constants.ResourcesConstants.PATH_GARAGE;
 import static com.stampyt.hello.controller.constants.ResourcesConstants.PATH_GARAGE_WITH_GARAGE_ID;
 
 @RestController
@@ -30,7 +31,7 @@ public class GarageController {
     private GarageBO2DTO garageBO2DTO;
     private GarageService garageService;
 
-    @RequestMapping(value = "/garage", method = RequestMethod.POST)
+    @RequestMapping(value = PATH_GARAGE, method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public GarageDTO createGarage(@Valid @RequestBody GarageDTO garage) {
         GarageBO garageBO = this.garageDTO2BO.convert(garage);
