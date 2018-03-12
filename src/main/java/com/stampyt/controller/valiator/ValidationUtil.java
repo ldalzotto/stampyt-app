@@ -18,23 +18,25 @@ public class ValidationUtil {
     }
 
     public static void validatePresenceOfRegistrationNumberOnly(CarDTO car) {
-        Field[] fields = car.getClass().getDeclaredFields();
-        try {
-            for (Field field :
-                    fields) {
-                if (!field.isSynthetic()) {
-                    if (!field.getName().equals("registrationNumber")) {
-                        field.setAccessible(true);
-                        if (field.get(car) != null) {
+        if (car != null) {
+            Field[] fields = car.getClass().getDeclaredFields();
+            try {
+                for (Field field :
+                        fields) {
+                    if (!field.isSynthetic()) {
+                        if (!field.getName().equals("registrationNumber")) {
+                            field.setAccessible(true);
+                            if (field.get(car) != null) {
+                                field.setAccessible(false);
+                                throw new InvalidArgumentException("The field : " + field.getName() + " cannot be updated.");
+                            }
                             field.setAccessible(false);
-                            throw new InvalidArgumentException("The field : " + field.getName() + " cannot be updated.");
                         }
-                        field.setAccessible(false);
                     }
                 }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 

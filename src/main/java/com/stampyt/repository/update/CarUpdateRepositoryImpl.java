@@ -7,13 +7,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @Repository
 public class CarUpdateRepositoryImpl implements CarUpdateRepository {
 
-    @PersistenceContext
     private EntityManager entityManager;
+
+    public CarUpdateRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     @Transactional

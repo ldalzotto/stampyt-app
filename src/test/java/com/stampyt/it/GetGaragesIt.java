@@ -41,4 +41,13 @@ public class GetGaragesIt {
         JDDAsserter.assertException(response.getBody(), null, RestErrorHandler.GARAGE_NOT_FOUND);
     }
 
+    @Test
+    public void getGarage_invalidId() {
+        ResponseEntity<ExceptionMessage> response =
+                this.testRestTemplate.getForEntity(URIRessourceProvider.buildGarageBasePath("gegeg"), ExceptionMessage.class);
+
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        JDDAsserter.assertException(response.getBody(), null, RestErrorHandler.BAD_REQUEST);
+    }
+
 }

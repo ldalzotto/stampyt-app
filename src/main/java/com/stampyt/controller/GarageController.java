@@ -1,5 +1,6 @@
 package com.stampyt.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stampyt.controller.constants.ResourcesConstants;
 import com.stampyt.controller.converter.GarageBO2DTO;
 import com.stampyt.controller.converter.GarageDTO2BO;
@@ -8,6 +9,8 @@ import com.stampyt.controller.valiator.ValidationUtil;
 import com.stampyt.service.GarageService;
 import com.stampyt.service.exceptions.InvalidArgumentException;
 import com.stampyt.service.model.GarageBO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,8 @@ import java.util.UUID;
 
 @RestController
 public class GarageController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GarageController.class);
 
     public GarageController(GarageService garageService,
                             GarageDTO2BO garageDTO2BO,
@@ -34,7 +39,6 @@ public class GarageController {
     @ResponseStatus(HttpStatus.CREATED)
     public GarageDTO createGarage(@Valid @RequestBody GarageDTO garage) {
         this.garageCreationCarNumberConstraint(garage);
-
         GarageBO garageBO = this.garageDTO2BO.convert(garage);
         GarageBO createdGarage = this.garageService.createGarage(garageBO);
         return this.garageBO2DTO.convert(createdGarage);
