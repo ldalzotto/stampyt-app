@@ -49,7 +49,7 @@ public class CarController {
     public CarDTO createCar(@PathVariable(value = ResourcesConstants.GARAGE_ID_PATH_VARIABLE_NAME) String garageId,
                             @Valid @RequestBody CarDTO carDefinition) {
         UUID validatedGarageId = ValidationUtil.validateIdFormat(garageId);
-        carDefinition.setCardId(validatedGarageId);
+        carDefinition.setCarId(validatedGarageId);
         CarBO carBO = this.carDTO2BO.convert(carDefinition);
         CarBO addedCar = this.carService.addCar(validatedGarageId, carBO);
         return this.carBO2DTO.convert(addedCar);
@@ -76,7 +76,7 @@ public class CarController {
         UUID validatedCarId = ValidationUtil.validateIdFormat(carId);
         ValidationUtil.validatePresenceOfRegistrationNumberOnly(car);
         CarDTO registrationNumberCar = this.extractRegistrationNumberFromCar(car);
-        registrationNumberCar.setCardId(validatedCarId);
+        registrationNumberCar.setCarId(validatedCarId);
         this.carService.updateCarDetails(validatedCarId, this.carDTO2BO.convert(registrationNumberCar));
     }
 

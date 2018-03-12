@@ -44,7 +44,7 @@ public class PutCarsIt {
 
         CarDTO generatedCar = GarageDTOProvider.generateRandomCar();
         CarDTO createdCar = GarageDTOProvider.saveCar(generatedCar, garageId, testRestTemplate).getBody();
-        UUID carId = createdCar.getCardId();
+        UUID carId = createdCar.getCarId();
 
         CarDTO carValuesToSave = new CarDTO();
         carValuesToSave.setBrand("TEST");

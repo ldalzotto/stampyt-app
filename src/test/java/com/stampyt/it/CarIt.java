@@ -66,13 +66,13 @@ public class CarIt {
                 this.testRestTemplate.postForEntity(URIRessourceProvider.buildGarageBasePath(garageId.toString()) + ResourcesConstants.PATH_CAR, randomCar, CarDTO.class);
         Assert.assertEquals(HttpStatus.CREATED, savedCar.getStatusCode());
         JDDAsserter.assertCarDetails(randomCar, savedCar.getBody());
-        Assert.assertNotNull(savedCar.getBody().getCardId());
+        Assert.assertNotNull(savedCar.getBody().getCarId());
     }
 
     @Test
     public void getCarDetail_nominalTest() {
         CarDTO savedCar = this.saveRandomCar(8);
-        UUID carId = savedCar.getCardId();
+        UUID carId = savedCar.getCarId();
         ResponseEntity<CarDTO> recoveredCar =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildCarBasePath(carId.toString()), CarDTO.class);
         Assert.assertEquals(HttpStatus.OK, recoveredCar.getStatusCode());
@@ -82,7 +82,7 @@ public class CarIt {
     @Test
     public void deleteCar_nominalTest() {
         CarDTO savedCar = this.saveRandomCar(8);
-        UUID carId = savedCar.getCardId();
+        UUID carId = savedCar.getCarId();
         this.testRestTemplate.delete(URIRessourceProvider.buildCarBasePath(carId.toString()));
         ResponseEntity<CarDTO> recoveredCar =
                 this.testRestTemplate.getForEntity(URIRessourceProvider.buildCarBasePath(carId.toString()), CarDTO.class);
@@ -96,7 +96,7 @@ public class CarIt {
     @Test
     public void updateCar_nominalTest() {
         CarDTO savedCar = this.saveRandomCar(8);
-        UUID carId = savedCar.getCardId();
+        UUID carId = savedCar.getCarId();
 
         CarDTO modifiedValues = new CarDTO();
         modifiedValues.setRegistrationNumber("MyNumber");

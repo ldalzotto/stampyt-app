@@ -14,7 +14,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarDTO {
 
-    private UUID cardId;
+    private UUID carId;
 
     private String brand;
 
@@ -79,12 +79,12 @@ public class CarDTO {
         this.registrationNumber = registrationNumber;
     }
 
-    public UUID getCardId() {
-        return cardId;
+    public UUID getCarId() {
+        return carId;
     }
 
-    public void setCardId(UUID cardId) {
-        this.cardId = cardId;
+    public void setCarId(UUID carId) {
+        this.carId = carId;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CarDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CarDTO carDTO = (CarDTO) o;
-        return Objects.equals(cardId, carDTO.cardId) &&
+        return Objects.equals(carId, carDTO.carId) &&
                 Objects.equals(brand, carDTO.brand) &&
                 Objects.equals(model, carDTO.model) &&
                 Objects.equals(color, carDTO.color) &&
@@ -104,6 +104,6 @@ public class CarDTO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(cardId, brand, model, color, registrationNumber, commisioningDate, price);
+        return Objects.hash(carId, brand, model, color, registrationNumber, commisioningDate, price);
     }
 }

@@ -13,7 +13,7 @@ public class CarDTO2BO implements Converter<CarDTO, CarBO> {
     public CarBO convert(CarDTO source) {
         CarBO carBO = new CarBO();
         if (source != null) {
-            carBO.setId(source.getCardId());
+            carBO.setId(source.getCarId());
             carBO.setBrand(source.getBrand());
             carBO.setColor(source.getColor());
             carBO.setCommisioningDate(source.getCommisioningDate());

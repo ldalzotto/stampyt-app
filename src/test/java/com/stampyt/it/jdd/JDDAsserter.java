@@ -32,7 +32,7 @@ public class JDDAsserter {
                 inputCars) {
             for (CarDTO outputCar :
                     responseCars) {
-                inputCar.setCardId(outputCar.getCardId());
+                inputCar.setCarId(outputCar.getCarId());
                 if (inputCar.equals(outputCar)) {
                     JDDAsserter.assertCarDetails(inputCar, outputCar);
                 }
